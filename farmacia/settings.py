@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+ALLOWED_HOSTS = [
+    'farmacia-huwe.onrender.com',  # tu app en Render
+    'localhost',                   # opcional para pruebas locales
+    '127.0.0.1',
+]
+
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
@@ -29,8 +35,6 @@ SECRET_KEY = 'django-insecure-&7z=iqva$(i+wks8v7ykh-&+zzwke%f6ht-#)_op4!jkucv1&_
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
