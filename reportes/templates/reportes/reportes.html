@@ -1,0 +1,84 @@
+{% extends 'reportes/base.html' %}
+{% block title %}Panel de Reportes{% endblock %}
+{% block content %}
+  <h1>Dashboard de Búsquedas</h1>
+  <div class="kpi-container">
+    <div class="kpi-card"><h2>Total de búsquedas</h2><p>{{ total_searches }}</p></div>
+    <div class="kpi-card"><h2>Términos únicos</h2><p>{{ unique_terms }}</p></div>
+  </div>
+
+  <!-- Tres <canvas> para nuestros gráficos -->
+  <div class="chart-container"><canvas id="barChart"></canvas></div>
+  <div class="chart-container"><canvas id="pieChart"></canvas></div>
+  <div class="chart-container"><canvas id="lineChart"></canvas></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    fetch("{% url 'reportes_data' %}")
+      .then(res => res.json())
+      .then(json => {
+        // 1) Bar Chart
+        new Chart(document.getElementById('barChart'), {
+          type: 'bar',
+          data: {
+            labels: json.term_labels,
+            datasets: [{
+              label: 'Términos más buscados',
+              data: json.term_counts,
+              backgroundColor: 'rgba(75, 192, 192, 0.6)',
+              borderColor:     'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+
+        // 2) Pie Chart
+        new Chart(document.getElementById('pieChart'), {
+          type: 'pie',
+          data: {
+            labels: json.cat_labels,
+            datasets: [{
+              data: json.cat_counts,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: { responsive: true }
+        });
+
+        // 3) Line Chart
+        new Chart(document.getElementById('lineChart'), {
+          type: 'line',
+          data: {
+            labels: json.ts_labels,
+            datasets: [{
+              label: 'Tendencia de búsquedas',
+              data: json.ts_counts,
+              borderColor: 'rgba(153, 102, 255, 1)',
+              backgroundColor: 'rgba(153, 102, 255, 0.4)',
+              fill: true,
+              tension: 0.1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      })
+      .catch(err => console.error('Error cargando datos:', err));
+  </script>
+{% endblock %}

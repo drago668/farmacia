@@ -1,0 +1,36 @@
+.chart-container {
+    width: 20rem;   /* ancho fijo */
+    height:20rem;  /* alto fijo */
+    margin: 0 auto; /* centrar opcional */
+  }
+
+.chart-container canvas {
+width: 100% !important;
+height: 100% !important;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio entre el input y el botón */
+}
+
+.search-input {
+  flex: 1; /* El input ocupa el espacio disponible */
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-button {
+  padding: 0.5rem 1rem;
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #1e40af;
+}

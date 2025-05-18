@@ -1,0 +1,9 @@
+{% extends 'reportes/base.html' %}
+
+{% block title %}mapa{% endblock %}
+
+{% block content %}
+{%load static%}
+    <h1>Mapa de Farmacias</h1>
+    <div>{{ map|safe }}</div>
+{%endblock%}

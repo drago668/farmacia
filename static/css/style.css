@@ -1,0 +1,262 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+header {
+    background-color: #2C3E50;
+    color: white;
+    padding: 20px 40px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    margin: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #18BC9C;
+}
+
+section {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+section h2 {
+    color: #2C3E50;
+    margin-bottom: 15px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 600px;
+    margin: auto;
+}
+
+form label {
+    font-weight: bold;
+    align-self: flex-start;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+form button {
+    background-color: #18BC9C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+form button:hover {
+    background-color: #128F76;
+}
+
+footer {
+    background-color: #2C3E50;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 0.9em;
+}
+
+/* Estilos para el apartado de gestión de proyectos */
+#proyectos {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#proyectos h2 {
+    color: #2C3E50;
+    margin-bottom: 15px;
+}
+
+.proyecto-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.proyecto-item {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.proyecto-item h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.proyecto-item p {
+    color: #666;
+}
+
+.add-proyecto {
+    background-color: #18BC9C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.add-proyecto:hover {
+    background-color: #128F76;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    max-height: 300px;
+}
+
+
+
+
+/* mis cambios para ser responsive*/
+
+.navbar .nav-item:not(:last-child) {
+  margin-right: 35px;
+}
+.dropdown-toggle::after {
+   transition: transform 0.15s linear; 
+}
+.show.dropdown .dropdown-toggle::after {
+  transform: translateY(3px);
+}
+
+.dropdown-menu {
+    margin-top: 0;
+}
+
+.navbar {
+    background-color: #204abd;  /* Azul oscuro */
+    padding: 15px;
+    color: #128F76;
+    
+}
+
+.navbar .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.navbar .nav-link {
+    color: #ffffff;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar .nav-link:hover {
+    color: #FACC15;  /* Amarillo */
+}
+
+.navbar .btn {
+    padding: 8px 15px;
+    border-radius: 10px;
+}
+
+.navbar-nav{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+.nav-item{
+    padding: 0 10px;
+}
+.cerrar_sesion{
+    margin-top: 30px;
+}
+
+.carousel-indicators li {
+    list-style: none; /* Elimina el marcador predeterminado */
+}
+.carousel-caption p {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con transparencia */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.perfil-img{
+    width: 309px;
+    height: 400px;
+    background: rgb(255, 255, 255);
+    border-radius: 153px;
+    max-height: 300px;
+}
+
+#cronometro {
+color: #28a745;
+font-family: 'Courier New', Courier, monospace;
+text-align: center;
+margin: 10px 0;
+}
+
+#id_nombre{
+    width: 60rem;
+}
+#id_descripcion{
+    width: 60rem;
+}
+#id_estado{
+    width: 60rem;
+}
+
+#nombre_cliente{
+    width: 30rem;
+}
