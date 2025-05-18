@@ -9,7 +9,8 @@ from .scraping import scrape_cruz_verde,scrape_la_rebaja
 def buscar_medicamentos(request):
     # 1. Leer parámetros de la URL
     query = request.GET.get('query', '').strip()
-    sort  = request.GET.get('sort', '')      
+    sort  = request.GET.get('sort', '')  
+    fuente  = request.GET.get('fuente', '')    
     last = request.session.get('last_query', '')
 
 
@@ -31,6 +32,8 @@ def buscar_medicamentos(request):
     # 3. Cargar resultados de la BD
     medicamentos = Medicamento.objects.all()
     
+    if fuente in ('CruzVerde', 'LaRebaja'):
+        medicamentos = medicamentos.filter(fuente=fuente)
     # 4. Aplicar ordenamiento
     if sort == 'precio_asc':
         medicamentos = medicamentos.order_by('precio')
@@ -44,4 +47,5 @@ def buscar_medicamentos(request):
     {   'medicamentos': medicamentos,
         'query': query,
         'sort': sort,
+        'fuente': fuente,
     })

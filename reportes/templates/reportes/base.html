@@ -80,7 +80,8 @@
                                     <input type="text" name="query" value="{{ query }}" class="form-control"
                                         class="border border-gray-300 rounded-l px-3 py-1 focus:outline-none"
                                         placeholder="Buscar medicamento…" class="search-input" />
-                                    <select name="sort"  class="form-select form-select-sm" aria-label="Default select example">
+                                    <select name="sort" class="form-select form-select-sm"
+                                        aria-label="Default select example">
                                         <option value="">Ordenar por</option>
                                         <option value="precio_asc" {% if sort == "precio_asc" %}selected{% endif %}>
                                             Precio ↑
@@ -88,8 +89,12 @@
                                         <option value="precio_desc" {% if sort == "precio_desc" %}selected{% endif %}>
                                             Precio ↓
                                         </option>
-                                        <option value="laboratorio" {% if sort == "laboratorio" %}selected{% endif %}>
-                                            Laboratorio
+                                    </select>
+                                    <select name="fuente" class="form-select form-select-sm ms-2">
+                                        <option value="">Filtrar por fuente</option>
+                                        <option value="CruzVerde" {% if fuente == "CruzVerde" %}selected{% endif %}>
+                                            CruzVerde</option>
+                                        <option value="LaRebaja" {% if fuente == "LaRebaja" %}selected{% endif %}>LaRebaja
                                         </option>
                                     </select>
                                     <button type="submit"
@@ -106,7 +111,7 @@
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
-   
+
 </body>
 
 </html>
