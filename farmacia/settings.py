@@ -12,12 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME','127.0.0.1', 'localhost',  )]
 
-ALLOWED_HOSTS = [
-    'farmacia-huwe.onrender.com',  # tu app en Render
-    'localhost',                   # opcional para pruebas locales
-    '127.0.0.1',
-]
 
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
