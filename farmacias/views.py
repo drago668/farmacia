@@ -1,10 +1,12 @@
 import folium
+from folium.plugins import LocateControl  # Importa el plugin
 from django.shortcuts import render
 from .models import Farmacia  # Asegúrate de tener un modelo Farmacia
 
 def mapa_farmacias(request):
     # Crear el mapa centrado en una ubicación inicial
     map = folium.Map(location=[4.8166, -74.3545], zoom_start=15)
+    LocateControl(auto_start=True).add_to(map)
     # Obtener todas las farmacias de la base de datos
     farmacias = Farmacia.objects.all()
     # Agregar marcadores para cada farmacia

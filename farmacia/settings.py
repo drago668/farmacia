@@ -141,3 +141,6 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+USE_L10N = True                         # activa la localización
+USE_THOUSAND_SEPARATOR = True           # permite separador de miles
+THOUSAND_SEPARATOR = '.'    

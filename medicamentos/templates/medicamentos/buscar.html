@@ -24,7 +24,10 @@
                             <h5 class="card-title text-truncate">{{ m.nombre }}</h5>
                             <p class="text-xs text-gray-500 mb-2">Fuente: {{ m.fuente }}</p>
                             <p class="card-text small text-muted mb-2">Lab: {{ m.laboratorio }}</p>
-                            <p class="card-text fw-bold mb-4">${{ m.precio|floatformat:0 }}</p>
+                            {% load l10n %}
+                            {% localize on %}
+                            <p class="card-text fw-bold mb-4"><span id="precio">${{ m.precio|floatformat:0 }}</span></p>
+                            {% endlocalize  %}
                             <a href="{{ m.url }}" target="_blank" class="mt-auto btn btn-primary">Ver producto</a>
                         </div>
                     </div>

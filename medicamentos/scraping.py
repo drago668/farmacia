@@ -4,9 +4,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 from .models import Medicamento
 from django.db import transaction
 from urllib.parse import quote_plus
+from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape_cruz_verde(query: str):
     print(f"🔍 Iniciando scraping de Cruz Verde para «{query}»…")
@@ -87,137 +89,88 @@ def scrape_cruz_verde(query: str):
     total = Medicamento.objects.count()
     print(f"✅ Scraping completado, {total} medicamentos guardados.")
 
-def scrape_farmatodo(query: str):
-    print(f"🔍 Iniciando scraping de Farmatodo para «{query}»…")
+
+def scrape_la_rebaja(query: str):
+    print(f"🔍 Iniciando scraping de La Rebaja para «{query}»…")
+    
+    # 1) Configura ChromeOptions
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    options.add_argument("--headless")                      # Modo headless
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("window-size=1920,1080")
+    options.add_argument("--ignore-certificate-errors")     # Ignorar errores SSL
+    options.add_argument("--ignore-ssl-errors=yes")
+    options.set_capability("acceptInsecureCerts", True)
 
-    driver = webdriver.Chrome(options=options)
+    # 2) Suprimir mensajes de logging y DevTools
+    #    Excluir el switch que activa el logging por defecto en ChromeDriver :contentReference[oaicite:0]{index=0}
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    #    Desactivar la extensión de automatización para evitar logs extra
+    options.add_experimental_option("useAutomationExtension", False)
+    
+    # 3) Crear el driver con nivel de log reducido (solo errores)
+    service = Service(ChromeDriverManager().install(), log_level=3)  # log_level=3 → ERROR únicamente :contentReference[oaicite:1]{index=1}
+    driver = webdriver.Chrome(service=service, options=options)
+    
+    # 4) Codifica el término y navega
     encoded = quote_plus(query)
-    url = f"https://www.farmatodo.com.co/buscar?product={encoded}&departamento=Todos&filtros="
+    url = f"https://www.larebajavirtual.com/{encoded}?_q={encoded}&map=ft"
     driver.get(url)
-
-    WebDriverWait(driver, 15).until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.card-ftd"))
-    )
-    time.sleep(2)
-
-    tarjetas = driver.find_elements(By.CSS_SELECTOR, "div.card-ftd")
-    print(f"👍 Encontré {len(tarjetas)} tarjetas en Farmatodo.")
-
-    for tarjeta in tarjetas:
-        try:
-            # Forzamos lazy-load de imagen
-            driver.execute_script("arguments[0].scrollIntoView(true);", tarjeta)
-            time.sleep(0.2)
-
-            nombre      = tarjeta.find_element(By.CSS_SELECTOR, "p.text-title").text.strip()
-            laboratorio = tarjeta.find_element(By.CSS_SELECTOR, "p.text-brand").text.strip()
-
-            # Precio (normal u oferta)
-            precio_el = tarjeta.find_elements(By.CSS_SELECTOR, "span.price__text-price") \
-                       or tarjeta.find_elements(By.CSS_SELECTOR, "span.price__text-offer-price")
-            if not precio_el:
-                raise ValueError("Precio no encontrado")
-            precio_text = precio_el[0].text
-            precio = float(precio_text.replace('$','').replace('.','').strip())
-
-            # URL del producto
-            link_el = tarjeta.find_element(By.CSS_SELECTOR, "a.product-image__link")
-            url_producto = link_el.get_attribute("href")
-
-            # Imagen lazy-loaded
-            img_el = tarjeta.find_element(By.CSS_SELECTOR, "img.product-image__image.lozad")
-            imagen_url = img_el.get_attribute("data-src") or img_el.get_attribute("src")
-
-        except Exception as e:
-            print(f"⚠️ Tarjeta Farmatodo ignorada: {e}")
-            continue
-
-        Medicamento.objects.create(
-            laboratorio = laboratorio,
-            nombre      = nombre,
-            precio      = precio,
-            url         = url_producto,
-            imagen_url  = imagen_url,
-            fuente      = "Farmatodo"
+    
+    # 5) Cierra popups si hay (cookies, región…)
+    try:
+        btn = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.close-cookie"))
         )
-
-    driver.quit()
-    print("✅ Scraping Farmatodo completado.")
-
-
-
-
-
-
-"""def scrape_farmatodo(query: str):
-    print(f"🔍 Iniciando scraping de Farmatodo para «{query}»…")
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("window-size=1920,1080")
-    driver = webdriver.Chrome(options=options)
-
-    # Construye la URL de búsqueda
-    encoded = quote_plus(query)
-    url = f"https://www.farmatodo.com.co/buscar?product={encoded}&departamento=Todos&filtros="
-    driver.get(url)
-
-    # Espera a que aparezcan las tarjetas
-    WebDriverWait(driver, 15).until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.card-ftd"))
+        btn.click()
+    except:
+        pass
+    
+    # 6) Espera a que aparezca al menos un producto
+    WebDriverWait(driver, 20).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "section.vtex-product-summary-2-x-container"))
     )
-    time.sleep(2)
-
-    tarjetas = driver.find_elements(By.CSS_SELECTOR, "div.card-ftd")
-    print(f"👍 Encontré {len(tarjetas)} tarjetas en Farmatodo.")
-
-    for tarjeta in tarjetas:
+    
+    # 7) Forzar scroll para lazy loading
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
+    
+    productos = driver.find_elements(By.CSS_SELECTOR, "section.vtex-product-summary-2-x-container")
+    print(f"👍 Encontré {len(productos)} productos.")
+    
+    resultados = []
+    for prod in productos:
         try:
-            # Nombre y laboratorio (siempre presentes)
-            nombre = tarjeta.find_element(By.CSS_SELECTOR, "p.text-title").text.strip()
-            laboratorio = tarjeta.find_element(By.CSS_SELECTOR, "p.text-brand").text.strip()
-
-            # Precio: el primero que aparezca (normal u oferta)
-            precio_el = tarjeta.find_elements(By.CSS_SELECTOR, "span.price__text-price") \
-                        or tarjeta.find_elements(By.CSS_SELECTOR, "span.offer-only")
-            precio_text = precio_el[0].text if precio_el else None
-            if not precio_text:
-                raise ValueError("Precio no encontrado")
-            precio = float(precio_text.replace('$','').replace('.','').strip())
-
-            # URL del producto: toma el primer <a> que redirija al detalle
-            link_el = tarjeta.find_element(By.CSS_SELECTOR, "a.product-image__link, a.content-product")
-            url_producto = link_el.get_attribute("href")
-
-            # Imagen: busca cualquier <img> dentro de la tarjeta
-            img_candidates = tarjeta.find_elements(By.TAG_NAME, "img")
-            imagen_url = ""
-            for img in img_candidates:
-                src = img.get_attribute("src") or img.get_attribute("data-src")
-                if src and src.startswith("http"):
-                    imagen_url = src
-                    break
-            # Si no hay imagen, puedes poner una por defecto o dejar vacío
-
+            nombre = prod.find_element(
+                By.CSS_SELECTOR,
+                "span.vtex-product-summary-2-x-productBrand"
+            ).text.strip()
+            
+            precio_text = prod.find_element(
+                By.CSS_SELECTOR,
+                "span.vtex-product-price-1-x-sellingPriceValue"
+            ).text.strip()
+            precio = float(precio_text.replace('$','').replace('.','').replace(',','').strip())
+            
+            enlace = prod.find_element(By.TAG_NAME, "a").get_attribute("href")
+            imagen = prod.find_element(
+                By.CSS_SELECTOR, 
+                "img.vtex-product-summary-2-x-imageNormal"
+            ).get_attribute("src")
+            
         except Exception as e:
-            print(f"⚠️ Tarjeta Farmatodo ignorada: {e}")
+            print(f"⚠️ Producto ignorado: {e}")
             continue
-
+        
         Medicamento.objects.create(
-            laboratorio = laboratorio,
-            nombre      = nombre,
-            precio      = precio,
-            url         = url_producto,
-            imagen_url  = imagen_url,
-            fuente      = "Farmatodo"
+            nombre= nombre,
+            precio= precio,
+            url= enlace,
+            imagen_url= imagen,
+            fuente= "LaRebaja",
         )
-
+    total=Medicamento.objects.count()
     driver.quit()
-"""
-
+    print(f"✅ Scraping completado, {len(total)} productos encontrados.")
+   

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .models import Medicamento
 from django.db.models import F
 from reportes.models import SearchTerm, SearchQuery
-from .scraping import scrape_cruz_verde,scrape_farmatodo
+from .scraping import scrape_cruz_verde,scrape_la_rebaja
 
 def buscar_medicamentos(request):
     # 1. Leer parámetros de la URL
@@ -16,7 +16,7 @@ def buscar_medicamentos(request):
     if query and query != last:
         Medicamento.objects.all().delete()
         scrape_cruz_verde(query)
-        scrape_farmatodo(query)
+        scrape_la_rebaja(query)
         request.session['last_query'] = query
 
         # Registrar o actualizar el término de búsqueda

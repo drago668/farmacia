@@ -46,8 +46,9 @@
                             <a class="nav-link" href="{%url 'dashboard' %}">dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Tareas</a>
+                            <a class="nav-link" href="{%url 'mapa_farmacias'%}">Tus farmacias cercanas</a>
                         </li>
+                        <!--
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -56,8 +57,8 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
                                 <a class="dropdown-item" href="#">Ver contratos</a>
                                 <a class="dropdown-item" href="#">Crear contrato</a>
-                                <!--<div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>-->
+                                <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -68,10 +69,11 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
                                 <a class="dropdown-item" href="#">Añadir proyectos</a>
                                 <a class="dropdown-item" href="#">Ver proyectos</a>
-                                <!--<div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>-->
+                                <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
                             </div>
                         </li>
+                    -->
                         <li>
                             <form class="d-flex" role="search" action="." method="get" class="search-form">
                                 <div class="input-group">
@@ -104,9 +106,7 @@
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
-    <footer>
-        <p>&copy; 2025 Software de Gestión para Freelancers. Todos los derechos reservados.</p>
-    </footer>
+   
 </body>
 
 </html>
